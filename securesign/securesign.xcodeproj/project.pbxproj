@@ -156,6 +156,7 @@
 		584EBB061BADD715001C766B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = ajsz;
 				TargetAttributes = {
@@ -409,6 +410,7 @@
 				584EBB2F1BADD715001C766B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		584EBB301BADD715001C766B /* Build configuration list for PBXNativeTarget "securesignTests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +419,7 @@
 				584EBB321BADD715001C766B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
