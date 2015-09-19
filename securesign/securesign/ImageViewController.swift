@@ -9,15 +9,24 @@
 import UIKit
 
 class ImageViewController: UIImagePickerController {
+    private let signatureBoxXPadding = CGFloat(36)
+    private let signatureBoxWidth = CGFloat(60)
+    private let signatureBorderBorderWidth = CGFloat(1)
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.cameraOverlayView = UIView(frame: self.view.bounds)
-        self.cameraOverlayView?.addSubview(UIView(frame: CGRect(x: 1.2*self.view.frame.width/2, y: 3*self.view.frame.height/4, width: 100, height: 50)))
-        
+      super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+      let signatureBorder = UIView(frame: CGRect(
+        x: signatureBoxXPadding,
+        y: view.frame.height / 2,
+        width: signatureBoxWidth,
+        height: view.frame.height / 4
+      ))
+      signatureBorder.layer.borderWidth = signatureBorderBorderWidth
+      signatureBorder.layer.borderColor = UIColor.grayColor().CGColor
+      signatureBorder.layer.cornerRadius = signatureBorderBorderWidth
+
+      self.cameraOverlayView = signatureBorder
     }
 
     override func didReceiveMemoryWarning() {
