@@ -9,10 +9,11 @@
 import UIKit
 import MobileCoreServices
 
-class ViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class ViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, CLUploaderDelegate {
 
     private var imageController = ImageViewController()
-    
+    private let cloudinary = CLCloudinary()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -24,6 +25,10 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
       imageController.delegate = self
       imageController.sourceType = .Camera
       imageController.mediaTypes = [kUTTypeImage as String]
+
+      cloudinary.config().setValue("dbsi55q8p", forKey: "cloud_name")
+      cloudinary.config().setValue("952365329324767", forKey: "api_key")
+      cloudinary.config().setValue("8vqdTCimEFHGxf_wN0X_wVzFxow", forKey: "api_secret")
     }
 
     override func didReceiveMemoryWarning() {
@@ -36,14 +41,47 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     }
 
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-      NSLog("hi")
-      self.dismissViewControllerAnimated(true, completion: nil)
+      let cropRect = picker.cameraOverlayView?.frame
+      self.dismissViewControllerAnimated(true) { () -> Void in
+        let imageData = info[UIImagePickerControllerOriginalImage]
+        let imageRef = CGImageCreateWithImageInRect(imageData?.CGImage, cropRect!)
+        let croppedImage = UIImage(CGImage: imageRef!)
+        let imageRequestData = UIImagePNGRepresentation(croppedImage)
+
+        let uploader = CLUploader(self.cloudinary, delegate: self)
+        let _ = uploader.upload(imageRequestData, options:[:])
+      }
     }
 
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 
+  func uploaderSuccess(result: [NSObject : AnyObject]!, context: AnyObject!) {
+    let public_id = result["url"]
+    NSLog("\(public_id)")
+    //    let device_id = UIDevice.currentDevice().identifierForVendor?.UUIDString
+    let serverAddress = "http://securisign-51650.onmodulus.net/api/predict/"
 
+    let requestURL = NSURL(string: "\(serverAddress)?personID=sonya&imageURL=\(public_id!)")
+
+    NSLog("\(requestURL)")
+    let request = NSMutableURLRequest(URL: requestURL!)
+    request.HTTPMethod = "GET"
+
+    NSURLConnection.sendAsynchronousRequest(request,
+      queue: NSOperationQueue()) { (urlResponse, responseData, error) -> Void in
+        if responseData != nil {
+          let response = NSString(data: responseData!, encoding: NSUTF8StringEncoding)?.integerValue
+          NSLog("\(response)")
+        } else {
+          NSLog("Something went wrong: \(error)")
+        }
+    }
+  }
+
+  func uploaderError(result: String!, code: Int, context: AnyObject!) {
+    NSLog("Upload error: \(result) \(code)")
+  }
 }
 

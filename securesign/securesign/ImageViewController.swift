@@ -17,10 +17,10 @@ class ImageViewController: UIImagePickerController {
       super.viewDidLoad()
 
       let signatureBorder = UIView(frame: CGRect(
-        x: signatureBoxXPadding,
-        y: view.frame.height / 2,
-        width: signatureBoxWidth,
-        height: view.frame.height / 4
+        x: 2 * view.frame.width / 5,
+        y: 3 * view.frame.height / 5,
+        width: view.frame.width / 2,
+        height: view.frame.height / 15
       ))
       signatureBorder.layer.borderWidth = signatureBorderBorderWidth
       signatureBorder.layer.borderColor = UIColor.grayColor().CGColor
